@@ -5,7 +5,6 @@ export default Joi.object({
   PORT: Joi.number().required(),
 
   /* DATABASE */
-  DATABASE_CLIENT: Joi.required(),
   DATABASE_HOST: Joi.required(),
   DATABASE_PORT: Joi.number().default(5432),
   DATABASE_USER: Joi.required(),

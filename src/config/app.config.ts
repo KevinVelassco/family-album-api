@@ -6,7 +6,6 @@ export default registerAs('config', () => ({
     port: parseInt(process.env.PORT, 10) || 8080,
   },
   database: {
-    client: process.env.DATABASE_CLIENT,
     host: process.env.DATABASE_HOST,
     port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
     user: process.env.DATABASE_USER,
