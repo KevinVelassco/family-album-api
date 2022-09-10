@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  render() {
+    return {
+      github: 'https://github.com/KevinVelassco/family-album-api',
+      documentation: 'api',
+    };
   }
 }
