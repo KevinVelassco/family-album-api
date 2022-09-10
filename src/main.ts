@@ -10,6 +10,8 @@ async function bootstrap() {
   // enabling for cors policy
   app.enableCors();
 
+  app.setGlobalPrefix('api');
+
   // getting the config service
   const configService = app.get(ConfigService);
 
