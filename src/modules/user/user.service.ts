@@ -11,7 +11,12 @@ import { Repository } from 'typeorm';
 import appConfig from '../../config/app.config';
 import { User } from './user.entity';
 import { ResultsOutputDto } from '../../common/dto';
-import { CreateUserDto, FindAllUsersDto, FindOneUserDto } from './dto';
+import {
+  CreateUserDto,
+  FindAllUsersDto,
+  FindOneUserDto,
+  UpdateUserDto,
+} from './dto';
 
 @Injectable()
 export class UserService {
@@ -94,5 +99,27 @@ export class UserService {
     }
 
     return item || null;
+  }
+
+  async update(findOneUserDto: FindOneUserDto, updateUserDto: UpdateUserDto) {
+    const existingUser = await this.findOne(findOneUserDto);
+
+    const { phone } = updateUserDto;
+
+    if (phone) {
+      const user = await this.userRepository.findOneBy({ phone });
+
+      if (user)
+        throw new ConflictException(`user with phone ${phone} already exists.`);
+    }
+
+    const preloaded = await this.userRepository.preload({
+      id: existingUser.id,
+      ...updateUserDto,
+    });
+
+    const saved = await this.userRepository.save(preloaded);
+
+    return saved;
   }
 }
