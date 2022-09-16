@@ -101,7 +101,10 @@ export class UserService {
     return item || null;
   }
 
-  async update(findOneUserDto: FindOneUserDto, updateUserDto: UpdateUserDto) {
+  async update(
+    findOneUserDto: FindOneUserDto,
+    updateUserDto: UpdateUserDto,
+  ): Promise<User> {
     const existingUser = await this.findOne(findOneUserDto);
 
     const { phone } = updateUserDto;

@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Get, Query, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Query,
+  Param,
+  Patch,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
@@ -12,7 +20,12 @@ import { UserService } from './user.service';
 import { User } from './user.entity';
 import { ResultsOutputDto } from '../../common/dto';
 import { ApiResultsResponse } from '../../common/decorators';
-import { CreateUserDto, FindAllUsersDto, FindOneUserDto } from './dto';
+import {
+  CreateUserDto,
+  FindAllUsersDto,
+  FindOneUserDto,
+  UpdateUserDto,
+} from './dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -51,5 +64,19 @@ export class UserController {
   @Get(':authUid')
   findOne(@Param() findOneUserDto: FindOneUserDto): Promise<User | null> {
     return this.userService.findOne(findOneUserDto);
+  }
+
+  @ApiOkResponse({
+    description: 'The user has been successfully updated.',
+    type: User,
+  })
+  @ApiBadRequestResponse({ description: 'Bad Request.' })
+  @ApiConflictResponse({ description: 'User with phone already exists.' })
+  @Patch(':authUid')
+  update(
+    @Param() findOneUserDto: FindOneUserDto,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    return this.userService.update(findOneUserDto, updateUserDto);
   }
 }
