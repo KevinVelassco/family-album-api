@@ -125,4 +125,12 @@ export class UserService {
 
     return saved;
   }
+
+  public async delete(findOneUserDto: FindOneUserDto): Promise<User> {
+    const existingUser = await this.findOne(findOneUserDto);
+
+    const deleted = await this.userRepository.softRemove(existingUser);
+
+    return deleted;
+  }
 }
