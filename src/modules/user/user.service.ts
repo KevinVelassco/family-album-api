@@ -1,4 +1,9 @@
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,7 +11,7 @@ import { Repository } from 'typeorm';
 import appConfig from '../../config/app.config';
 import { User } from './user.entity';
 import { ResultsOutputDto } from '../../common/dto';
-import { CreateUserDto, FindAllUsersDto } from './dto';
+import { CreateUserDto, FindAllUsersDto, FindOneUserDto } from './dto';
 
 @Injectable()
 export class UserService {
@@ -76,5 +81,18 @@ export class UserService {
     const [results, count] = await query.getManyAndCount();
 
     return { count, results };
+  }
+
+  async findOne(findOneUserDto: FindOneUserDto): Promise<User | null> {
+    const { authUid, checkIfExists = true } = findOneUserDto;
+    const item = await this.userRepository.findOneBy({ authUid });
+
+    if (checkIfExists && !item) {
+      throw new NotFoundException(
+        `can't get the user with authUid ${authUid}.`,
+      );
+    }
+
+    return item || null;
   }
 }
