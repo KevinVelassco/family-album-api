@@ -6,6 +6,7 @@ import {
   Query,
   Param,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -60,7 +61,7 @@ export class UserController {
 
   @ApiOkResponse({ type: User })
   @ApiBadRequestResponse({ description: 'authUid must be a UUID.' })
-  @ApiNotFoundResponse({ description: 'user not found.' })
+  @ApiNotFoundResponse({ description: 'User not found.' })
   @Get(':authUid')
   findOne(@Param() findOneUserDto: FindOneUserDto): Promise<User | null> {
     return this.userService.findOne(findOneUserDto);
@@ -71,6 +72,7 @@ export class UserController {
     type: User,
   })
   @ApiBadRequestResponse({ description: 'Bad Request.' })
+  @ApiNotFoundResponse({ description: 'User not found.' })
   @ApiConflictResponse({ description: 'User with phone already exists.' })
   @Patch(':authUid')
   update(
@@ -78,5 +80,16 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
     return this.userService.update(findOneUserDto, updateUserDto);
+  }
+
+  @ApiOkResponse({
+    description: 'The user has been successfully deleted.',
+    type: User,
+  })
+  @ApiBadRequestResponse({ description: 'authUid must be a UUID.' })
+  @ApiNotFoundResponse({ description: 'User not found.' })
+  @Delete(':authUid')
+  delete(@Param() findOneUserDto: FindOneUserDto): Promise<User> {
+    return this.userService.delete(findOneUserDto);
   }
 }
