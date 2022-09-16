@@ -4,6 +4,8 @@ export default registerAs('config', () => ({
   environment: process.env.NODE_ENV || 'development',
   app: {
     port: parseInt(process.env.PORT, 10) || 8080,
+    default_limit: +process.env.DEFAULT_LIMIT || 10,
+    maximun_limit: +process.env.MAXIMUM_LIMIT || 50,
   },
   database: {
     host: process.env.DATABASE_HOST,

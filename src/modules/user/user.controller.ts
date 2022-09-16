@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query } from '@nestjs/common';
 import {
   ApiConflictResponse,
   ApiCreatedResponse,
@@ -7,7 +7,9 @@ import {
 
 import { UserService } from './user.service';
 import { User } from './user.entity';
-import { CreateUserDto } from './dto';
+import { CreateUserDto, FindAllUsersDto } from './dto';
+import { ResultsOutputDto } from '../../common/dto';
+import { ApiResultsResponse } from '../../common/decorators';
 
 @ApiTags('user')
 @Controller('user')
@@ -17,10 +19,21 @@ export class UserController {
   @ApiCreatedResponse({ description: 'User was created.', type: User })
   @ApiConflictResponse({
     description:
-      'user with email already exists. | user with phone already exists.',
+      'User with email already exists. | User with phone already exists.',
   })
   @Post()
   create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto);
+  }
+
+  @ApiResultsResponse(User)
+  @ApiConflictResponse({
+    description: 'Limit greater than 50.',
+  })
+  @Get()
+  findAll(
+    @Query() findAllUsersDto: FindAllUsersDto,
+  ): Promise<ResultsOutputDto<User>> {
+    return this.userService.findAll(findAllUsersDto);
   }
 }

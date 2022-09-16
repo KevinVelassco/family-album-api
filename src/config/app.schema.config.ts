@@ -3,6 +3,8 @@ import * as Joi from 'joi';
 export default Joi.object({
   /* APP */
   PORT: Joi.number().required(),
+  DEFAULT_LIMIT: Joi.number().required(),
+  MAXIMUM_LIMIT: Joi.number().required(),
 
   /* DATABASE */
   DATABASE_HOST: Joi.required(),
