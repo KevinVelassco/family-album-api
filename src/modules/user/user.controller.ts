@@ -20,7 +20,7 @@ import {
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { ResultsOutputDto } from '../../common/dto';
-import { ApiResultsResponse } from '../../common/decorators';
+import { Admin, ApiResultsResponse } from '../../common/decorators';
 import {
   CreateUserDto,
   FindAllUsersDto,
@@ -52,6 +52,7 @@ export class UserController {
   @ApiConflictResponse({
     description: 'Limit greater than 50.',
   })
+  @Admin()
   @Get()
   findAll(
     @Query() findAllUsersDto: FindAllUsersDto,
