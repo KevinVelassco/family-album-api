@@ -49,7 +49,7 @@ export class User {
   phone?: string;
 
   @Exclude()
-  @Column({ type: 'varchar', length: 100, select: false })
+  @Column({ type: 'varchar', length: 100 })
   password: string;
 
   @Exclude()

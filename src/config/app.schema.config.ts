@@ -5,6 +5,10 @@ export default Joi.object({
   PORT: Joi.number().required(),
   DEFAULT_LIMIT: Joi.number().required(),
   MAXIMUM_LIMIT: Joi.number().required(),
+  ACCESS_TOKEN_SECRET: Joi.required(),
+  ACCESS_TOKEN_EXPIRATION: Joi.required(),
+  REFRESH_TOKEN_SECRET: Joi.required(),
+  REFRESH_TOKEN_EXPIRATION: Joi.required(),
 
   /* DATABASE */
   DATABASE_HOST: Joi.required(),

@@ -6,6 +6,10 @@ export default registerAs('config', () => ({
     port: parseInt(process.env.PORT, 10) || 8080,
     default_limit: +process.env.DEFAULT_LIMIT || 10,
     maximun_limit: +process.env.MAXIMUM_LIMIT || 50,
+    accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
+    accessTokenExpiration: process.env.ACCESS_TOKEN_EXPIRATION,
+    refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
+    refreshTokenExpiration: process.env.REFRESH_TOKEN_EXPIRATION,
   },
   database: {
     host: process.env.DATABASE_HOST,
