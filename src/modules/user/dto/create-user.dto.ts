@@ -7,14 +7,17 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { IsNotEmptyCustom } from '../../../common/decorators';
 
 export class CreateUserDto {
   @ApiProperty({ maxLength: 100 })
+  @IsNotEmptyCustom()
   @IsString()
   @MaxLength(100)
   readonly name: string;
 
   @ApiProperty({ maxLength: 100 })
+  @IsNotEmptyCustom()
   @IsString()
   @MaxLength(100)
   readonly lastName: string;
@@ -30,6 +33,7 @@ export class CreateUserDto {
   phone?: string;
 
   @ApiProperty({ minLength: 8, maxLength: 50 })
+  @IsNotEmptyCustom()
   @IsString()
   @MinLength(8)
   @MaxLength(50)
