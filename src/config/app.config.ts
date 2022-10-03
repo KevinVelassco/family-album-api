@@ -10,6 +10,7 @@ export default registerAs('config', () => ({
     accessTokenExpiration: process.env.ACCESS_TOKEN_EXPIRATION,
     refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
     refreshTokenExpiration: process.env.REFRESH_TOKEN_EXPIRATION,
+    maximumImageFileSizeInMB: +process.env.MAXIMUM_IMAGE_FILE_SIZE_IN_MB,
   },
   database: {
     host: process.env.DATABASE_HOST,
@@ -18,5 +19,10 @@ export default registerAs('config', () => ({
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
     log: process.env.DATABASE_LOG || 'yes',
+  },
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    apiSecret: process.env.CLOUDINARY_API_SECRET,
   },
 }));
