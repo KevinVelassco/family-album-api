@@ -9,7 +9,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 
 import appConfig from '../../../config/app.config';
-import { User } from '../../../modules/user/user.entity';
 import { UserService } from '../../../modules/user/user.service';
 import { JwtPayload } from '../interfaces';
 

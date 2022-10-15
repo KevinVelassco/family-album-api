@@ -89,7 +89,7 @@ export class UserService {
   }
 
   async findOne(findOneUserDto: FindOneUserDto): Promise<User | null> {
-    const { authUid, checkIfExists = true } = findOneUserDto;
+    const { authUid, checkIfExists = false } = findOneUserDto;
     const item = await this.userRepository.findOneBy({ authUid });
 
     if (checkIfExists && !item) {
@@ -127,7 +127,10 @@ export class UserService {
   }
 
   async delete(findOneUserDto: FindOneUserDto): Promise<User> {
-    const existingUser = await this.findOne(findOneUserDto);
+    const existingUser = await this.findOne({
+      ...findOneUserDto,
+      checkIfExists: true,
+    });
 
     const deleted = await this.userRepository.softRemove(existingUser);
 

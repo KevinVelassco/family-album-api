@@ -20,7 +20,7 @@ import {
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { ResultsOutputDto } from '../../common/dto';
-import { Admin, ApiResultsResponse } from '../../common/decorators';
+import { Admin, ApiResultsResponse, Public } from '../../common/decorators';
 import {
   CreateUserDto,
   FindAllUsersDto,
@@ -42,6 +42,7 @@ export class UserController {
     description:
       'User with email already exists. | User with phone already exists.',
   })
+  @Public()
   @Post()
   create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto);
@@ -65,7 +66,7 @@ export class UserController {
   @ApiNotFoundResponse({ description: 'User not found.' })
   @Get(':authUid')
   findOne(@Param() findOneUserDto: FindOneUserDto): Promise<User | null> {
-    return this.userService.findOne(findOneUserDto);
+    return this.userService.findOne({ ...findOneUserDto, checkIfExists: true });
   }
 
   @ApiOkResponse({
