@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 
 import { Request, Response } from 'express';
+import { databaseException } from '../helpers';
 
 @Catch()
 export class CustomExceptionFilter implements ExceptionFilter {
@@ -32,7 +33,11 @@ export class CustomExceptionFilter implements ExceptionFilter {
           ? { message: exceptionResponse }
           : exceptionResponse;
     } else {
-      error = this.handleDatabaseException(exception);
+      error = databaseException(exception) ?? {
+        statusCode: 500,
+        message: 'Internal server error',
+      };
+
       status = error.statusCode ?? status;
     }
 
@@ -59,31 +64,5 @@ export class CustomExceptionFilter implements ExceptionFilter {
       statusCode: status,
       ...error,
     });
-  }
-
-  private handleDatabaseException(error: any) {
-    const uniqueRestrictionErrorCode = '23505';
-    const valueTooLongErrorCode = '22001';
-
-    if (error.code === uniqueRestrictionErrorCode) {
-      return {
-        statusCode: 409,
-        message: error.detail,
-        error: 'Conflict',
-      };
-    }
-
-    if (error.code === valueTooLongErrorCode) {
-      return {
-        statusCode: 400,
-        message: 'some property exceeds the allowed length',
-        error: 'Bad Request',
-      };
-    }
-
-    return {
-      statusCode: 500,
-      message: 'Internal server error',
-    };
   }
 }

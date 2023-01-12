@@ -66,7 +66,7 @@ export class UserController {
   @ApiNotFoundResponse({ description: 'User not found.' })
   @Get(':authUid')
   findOne(@Param() findOneUserDto: FindOneUserDto): Promise<User | null> {
-    return this.userService.findOne({ ...findOneUserDto, checkIfExists: true });
+    return this.userService.findOne(findOneUserDto);
   }
 
   @ApiOkResponse({
