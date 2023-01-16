@@ -1,8 +1,10 @@
-import { Controller, Post, Body, Get, Query } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Param } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -11,6 +13,7 @@ import { LabelService } from './label.service';
 import { Label } from './label.entity';
 import { CreateLabelDto } from './dto/create-label.dto';
 import { PaginationDto, ResultsOutputDto } from '../../common/dto';
+import { FindOneLabelDto } from './dto/find-one-label.dto';
 
 @ApiTags('label')
 @Controller('label')
@@ -42,5 +45,17 @@ export class LabelController {
     @Query() paginationDto: PaginationDto,
   ): Promise<ResultsOutputDto<Label>> {
     return this.labelService.findAll(paginationDto);
+  }
+
+  @ApiOkResponse({ type: Label })
+  @ApiBadRequestResponse({ description: 'Uid must be a UUID.' })
+  @ApiNotFoundResponse({ description: 'Label not found.' })
+  @Admin()
+  @Get(':uid')
+  findOne(@Param() findOneLabelDto: FindOneLabelDto): Promise<Label | null> {
+    return this.labelService.findOne({
+      ...findOneLabelDto,
+      checkIfExists: true,
+    });
   }
 }

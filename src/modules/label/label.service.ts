@@ -1,4 +1,9 @@
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,6 +12,7 @@ import appConfig from '../../config/app.config';
 import { Label } from './label.entity';
 import { CreateLabelDto } from './dto/create-label.dto';
 import { PaginationDto, ResultsOutputDto } from '../../common/dto';
+import { FindOneLabelDto } from './dto/find-one-label.dto';
 
 @Injectable()
 export class LabelService {
@@ -61,5 +67,17 @@ export class LabelService {
     const [results, count] = await query.getManyAndCount();
 
     return { count, results };
+  }
+
+  async findOne(findOneLabelDto: FindOneLabelDto): Promise<Label | null> {
+    const { uid, checkIfExists = false } = findOneLabelDto;
+
+    const item = await this.labelRepository.findOneBy({ uid });
+
+    if (checkIfExists && !item) {
+      throw new NotFoundException(`can't get the label with uid ${uid}.`);
+    }
+
+    return item || null;
   }
 }
