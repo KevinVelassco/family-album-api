@@ -11,6 +11,7 @@ import { AppService } from './app.service';
 import { CommonModule } from './common/common.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { LabelModule } from './modules/label/label.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { AuthModule } from './modules/auth/auth.module';
     CommonModule,
     UserModule,
     AuthModule,
+    LabelModule,
   ],
   controllers: [AppController],
   providers: [AppService],
