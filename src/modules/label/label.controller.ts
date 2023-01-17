@@ -6,6 +6,7 @@ import {
   Query,
   Param,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -84,5 +85,17 @@ export class LabelController {
     @Body() updateLabelDto: UpdateLabelDto,
   ): Promise<Label> {
     return this.labelService.update(findOneLabelDto, updateLabelDto);
+  }
+
+  @ApiOkResponse({
+    description: 'The label has been successfully deleted.',
+    type: Label,
+  })
+  @ApiBadRequestResponse({ description: 'Uid must be a UUID.' })
+  @ApiNotFoundResponse({ description: 'Label not found.' })
+  @Admin()
+  @Delete(':uid')
+  delete(@Param() findOneLabelDto: FindOneLabelDto): Promise<Label> {
+    return this.labelService.delete(findOneLabelDto);
   }
 }

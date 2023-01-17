@@ -115,4 +115,17 @@ export class LabelService {
 
     return saved;
   }
+
+  async delete(findOneLabelDto: FindOneLabelDto): Promise<Label> {
+    const { uid } = findOneLabelDto;
+
+    const existingUser = await this.findOne({
+      uid,
+      checkIfExists: true,
+    });
+
+    const deleted = await this.labelRepository.remove(existingUser);
+
+    return deleted;
+  }
 }
