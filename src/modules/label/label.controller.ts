@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Get, Query, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Query,
+  Param,
+  Patch,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
@@ -14,6 +22,7 @@ import { Label } from './label.entity';
 import { CreateLabelDto } from './dto/create-label.dto';
 import { PaginationDto, ResultsOutputDto } from '../../common/dto';
 import { FindOneLabelDto } from './dto/find-one-label.dto';
+import { UpdateLabelDto } from './dto/update-label.dto';
 
 @ApiTags('label')
 @Controller('label')
@@ -57,5 +66,23 @@ export class LabelController {
       ...findOneLabelDto,
       checkIfExists: true,
     });
+  }
+
+  @ApiOkResponse({
+    description: 'The label has been successfully updated.',
+    type: Label,
+  })
+  @ApiBadRequestResponse({ description: 'Bad Request.' })
+  @ApiNotFoundResponse({ description: 'Label not found.' })
+  @ApiConflictResponse({
+    description: 'Label with that name already exists.',
+  })
+  @Admin()
+  @Patch(':uid')
+  update(
+    @Param() findOneLabelDto: FindOneLabelDto,
+    @Body() updateLabelDto: UpdateLabelDto,
+  ): Promise<Label> {
+    return this.labelService.update(findOneLabelDto, updateLabelDto);
   }
 }

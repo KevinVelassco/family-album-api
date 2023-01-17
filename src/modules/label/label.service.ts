@@ -13,6 +13,7 @@ import { Label } from './label.entity';
 import { CreateLabelDto } from './dto/create-label.dto';
 import { PaginationDto, ResultsOutputDto } from '../../common/dto';
 import { FindOneLabelDto } from './dto/find-one-label.dto';
+import { UpdateLabelDto } from './dto/update-label.dto';
 
 @Injectable()
 export class LabelService {
@@ -28,7 +29,7 @@ export class LabelService {
 
     const existingByName = await this.labelRepository
       .createQueryBuilder('label')
-      .where('upper(label.name) = upper(:name)', { name })
+      .where('lower(label.name) = lower(:name)', { name })
       .getOne();
 
     if (existingByName)
@@ -79,5 +80,39 @@ export class LabelService {
     }
 
     return item || null;
+  }
+
+  async update(
+    findOneLabelDto: FindOneLabelDto,
+    updateLabelDto: UpdateLabelDto,
+  ): Promise<Label> {
+    const { uid } = findOneLabelDto;
+
+    const existingLabel = await this.findOne({
+      uid,
+      checkIfExists: true,
+    });
+
+    const { name } = updateLabelDto;
+
+    if (name) {
+      const existingByName = await this.labelRepository
+        .createQueryBuilder('label')
+        .where('lower(label.name) = lower(:name)', { name })
+        .getOne();
+
+      if (existingByName)
+        throw new ConflictException(`label with name ${name} already exists.`);
+    }
+
+    const preloaded = await this.labelRepository.preload({
+      id: existingLabel.id,
+      ...updateLabelDto,
+      name: name?.toLowerCase(),
+    });
+
+    const saved = await this.labelRepository.save(preloaded);
+
+    return saved;
   }
 }
