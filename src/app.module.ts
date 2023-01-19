@@ -12,6 +12,7 @@ import { CommonModule } from './common/common.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { LabelModule } from './modules/label/label.module';
+import { GroupModule } from './modules/group/group.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { LabelModule } from './modules/label/label.module';
     UserModule,
     AuthModule,
     LabelModule,
+    GroupModule,
   ],
   controllers: [AppController],
   providers: [AppService],
