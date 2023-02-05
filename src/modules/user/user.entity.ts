@@ -8,12 +8,15 @@ import {
   DeleteDateColumn,
   Entity,
   Generated,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
+import { GroupAssignedUser } from '../group/entities/group-assigned-user.entity';
+import { GroupRequest } from '../group-request/group-request.entity';
 
 @Entity({ name: 'users' })
 @Unique('uq_user_auth_uid', ['authUid'])
@@ -75,6 +78,18 @@ export class User {
   @Exclude()
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
+
+  @OneToMany(
+    () => GroupAssignedUser,
+    (groupAssignedUser: GroupAssignedUser) => groupAssignedUser.user,
+  )
+  groupAssignedUsers: GroupAssignedUser[];
+
+  @OneToMany(
+    () => GroupRequest,
+    (groupRequest: GroupRequest) => groupRequest.user,
+  )
+  groupRequests: GroupRequest[];
 
   @BeforeInsert()
   @BeforeUpdate()

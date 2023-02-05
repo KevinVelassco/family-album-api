@@ -17,9 +17,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { ApiResultsResponse } from '../../common/decorators';
+import { ApiResultsResponse, GetCurrentUser } from '../../common/decorators';
 import { GroupService } from './group.service';
-import { Group } from './group.entity';
+import { Group } from './entities/group.entity';
+import { User } from '../user/user.entity';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { PaginationDto, ResultsOutputDto } from '../../common/dto';
 import { FindOneGroupDto } from './dto/find-one-group.dto';
@@ -35,12 +36,12 @@ export class GroupController {
     type: Group,
   })
   @ApiBadRequestResponse({ description: 'Bad Request.' })
-  @ApiConflictResponse({
-    description: 'Group with that name already exists.',
-  })
   @Post()
-  create(@Body() createGroupDto: CreateGroupDto): Promise<Group> {
-    return this.groupService.create(createGroupDto);
+  create(
+    @GetCurrentUser() authUser: User,
+    @Body() createGroupDto: CreateGroupDto,
+  ): Promise<Group> {
+    return this.groupService.create(authUser, createGroupDto);
   }
 
   @ApiResultsResponse(Group)
@@ -50,17 +51,21 @@ export class GroupController {
   })
   @Get()
   findAll(
+    @GetCurrentUser() authUser: User,
     @Query() paginationDto: PaginationDto,
   ): Promise<ResultsOutputDto<Group>> {
-    return this.groupService.findAll(paginationDto);
+    return this.groupService.findAll(authUser, paginationDto);
   }
 
   @ApiOkResponse({ type: Group })
   @ApiBadRequestResponse({ description: 'Uid must be a UUID.' })
   @ApiNotFoundResponse({ description: 'Group not found.' })
   @Get(':uid')
-  findOne(@Param() findOneGroupDto: FindOneGroupDto): Promise<Group | null> {
-    return this.groupService.findOne({
+  findOne(
+    @GetCurrentUser() authUser: User,
+    @Param() findOneGroupDto: FindOneGroupDto,
+  ): Promise<Group | null> {
+    return this.groupService.findOne(authUser, {
       ...findOneGroupDto,
       checkIfExists: true,
     });
@@ -72,15 +77,13 @@ export class GroupController {
   })
   @ApiBadRequestResponse({ description: 'Bad Request.' })
   @ApiNotFoundResponse({ description: 'Group not found.' })
-  @ApiConflictResponse({
-    description: 'Group with that name already exists.',
-  })
   @Patch(':uid')
   update(
+    @GetCurrentUser() authUser: User,
     @Param() findOneGroupDto: FindOneGroupDto,
     @Body() updateGroupDto: UpdateGroupDto,
   ): Promise<Group> {
-    return this.groupService.update(findOneGroupDto, updateGroupDto);
+    return this.groupService.update(authUser, findOneGroupDto, updateGroupDto);
   }
 
   @ApiOkResponse({
@@ -90,7 +93,10 @@ export class GroupController {
   @ApiBadRequestResponse({ description: 'Uid must be a UUID.' })
   @ApiNotFoundResponse({ description: 'Group not found.' })
   @Delete(':uid')
-  delete(@Param() findOneGroupDto: FindOneGroupDto): Promise<Group> {
-    return this.groupService.delete(findOneGroupDto);
+  delete(
+    @GetCurrentUser() authUser: User,
+    @Param() findOneGroupDto: FindOneGroupDto,
+  ): Promise<Group> {
+    return this.groupService.delete(authUser, findOneGroupDto);
   }
 }

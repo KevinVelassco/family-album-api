@@ -5,10 +5,13 @@ import {
   CreateDateColumn,
   Entity,
   Generated,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
+import { GroupAssignedUser } from './group-assigned-user.entity';
+import { GroupRequest } from '../../group-request/group-request.entity';
 
 @Entity({ name: 'groups' })
 @Unique('uq_group_uid', ['uid'])
@@ -36,4 +39,20 @@ export class Group {
   @ApiProperty()
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @Exclude()
+  @OneToMany(
+    () => GroupAssignedUser,
+    (groupAssignedUser: GroupAssignedUser) => groupAssignedUser.group,
+    {
+      cascade: ['insert'],
+    },
+  )
+  groupAssignedUsers: GroupAssignedUser[];
+
+  @OneToMany(
+    () => GroupRequest,
+    (groupRequest: GroupRequest) => groupRequest.group,
+  )
+  groupRequests: GroupRequest[];
 }

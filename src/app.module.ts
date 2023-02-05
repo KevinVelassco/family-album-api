@@ -13,6 +13,8 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { LabelModule } from './modules/label/label.module';
 import { GroupModule } from './modules/group/group.module';
+import { GroupLabelModule } from './modules/group-label/group-label.module';
+import { GroupRequestModule } from './modules/group-request/group-request.module';
 
 @Module({
   imports: [
@@ -44,6 +46,8 @@ import { GroupModule } from './modules/group/group.module';
     AuthModule,
     LabelModule,
     GroupModule,
+    GroupLabelModule,
+    GroupRequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],
