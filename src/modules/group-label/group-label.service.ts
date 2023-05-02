@@ -93,19 +93,40 @@ export class GroupLabelService {
       checkIfExists: true,
     });
 
-    const query = this.groupLabelRepository
-      .createQueryBuilder('label')
-      .where('label.group_id = :groupId', { groupId: group.id });
-    if (q)
-      query.andWhere('label.name ilike :q ', {
-        q: `%${q}%`,
-      });
+    let query = `select label.uid,
+        label.name,
+        label.text_color "textColor",
+        label.background_color "backgroundColor",
+        label.label_type "labelType",
+        created_at "createdAt",
+        updated_at "updatedAt"
+      from (
+        select l.id, l.uid, l.name, l.text_color, l.background_color, 'APP' label_type, created_at, updated_at
+          from labels l
+          where lower(l.name) not in (select lower(gl.name) from group_labels gl where gl.group_id = $1)
+        union all
+        select gl.id, gl.uid, gl.name, gl.text_color, gl.background_color, 'GROUP' label_type, created_at, updated_at
+          from group_labels gl
+          where gl.group_id = $2) label `;
 
-    query.take(limit).skip(offset).orderBy('label.id', 'DESC');
+    const parameters: [number, number, number, number, string?] = [
+      group.id,
+      group.id,
+      limit,
+      offset,
+    ];
 
-    const [results, count] = await query.getManyAndCount();
+    if (q) {
+      query += `where label.name ilike '%'||$5||'%' `;
 
-    return { count, results };
+      parameters.push(q);
+    }
+
+    query += 'order by label.label_type asc, label.id desc limit $3 offset $4';
+
+    const results = await this.groupLabelRepository.query(query, parameters);
+
+    return { count: results.length, results };
   }
 
   async findOne(
@@ -212,5 +233,9 @@ export class GroupLabelService {
         'the label cannot be removed because it is being used on images or videos.',
       );
     }
+  }
+
+  async createGroupLabelsFromAppLabels(uids: string[]): Promise<void> {
+    throw new ConflictException('method not implemented');
   }
 }
