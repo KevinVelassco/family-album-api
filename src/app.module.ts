@@ -29,13 +29,17 @@ import { GroupRequestModule } from './modules/group-request/group-request.module
       useFactory: (configService: ConfigType<typeof appConfig>) => {
         return {
           type: 'postgres',
+          ssl:
+            configService.environment === 'production'
+              ? { rejectUnauthorized: false, sslmode: 'require' }
+              : false,
           host: configService.database.host,
           port: configService.database.port,
           username: configService.database.user,
           password: configService.database.password,
           database: configService.database.database,
           autoLoadEntities: true,
-          synchronize: false,
+          synchronize: configService.environment !== 'production',
           logging: configService.database.log === 'yes',
         };
       },
